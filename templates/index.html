@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Página de inicio de sesión para estudiantes y administradores.">
+    <meta name="author" content="Cecilio">
+    <meta property="og:title" content="Interfaz de Usuario">
+    <meta property="og:description" content="Inicia sesión para continuar.">
+    <meta property="og:image" content="/path/to/preview-image.jpg">
+    <title>Inicio de Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="/path/to/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body class="d-flex flex-column justify-content-between vh-100">
+    <header class="text-center py-4">
+        <h1>Bienvenido a la StudyCar</h1>
+    </header>
+    <main class="d-flex justify-content-center align-items-center flex-grow-1">
+        <div class="container bg-white text-dark p-5 rounded shadow-lg">
+            <h2 class="mb-4 text-center">Inicia Sesión</h2>
+            <form action="/login" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="invalid-feedback">Por favor, ingresa tu usuario.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="invalid-feedback">Por favor, ingresa tu contraseña.</div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Iniciar Sesión</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer class="text-center py-3">
+        <p>&copy; 2025 Cecilio. Simulacion.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/index.js"></script>
+</body>
+</html>

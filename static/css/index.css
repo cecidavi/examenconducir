@@ -1,0 +1,22 @@
+body {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+}
+header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.btn {
+    font-size: 1.2rem;
+    padding: 0.75rem 2rem;
+}
+.btn:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+.container {
+    max-width: 600px;
+}
+footer p {
+    font-size: 0.9rem;
+}
