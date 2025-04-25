@@ -14,9 +14,12 @@ def create_connection():
         return conn
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB: {e}")
-        sys.exit(1)
+        return None  # Devuelve None en lugar de salir
 
 # Example usage
 if __name__ == "__main__":
     connection = create_connection()
-    connection.close()
+    if connection:
+        connection.close()
+    else:
+        print("Failed to connect to the database.")
