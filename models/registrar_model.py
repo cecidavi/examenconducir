@@ -27,3 +27,14 @@ def crear_usuario(nombre, paterno, materno, email, telefono, contrasena):
             cursor.close()
         if conn:
             conn.close()
+
+def obtener_matricula_por_email(email):
+    conn = create_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT matricula FROM estudiante WHERE email = %s", (email,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+    finally:
+        cursor.close()
+        conn.close()
