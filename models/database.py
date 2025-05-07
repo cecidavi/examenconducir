@@ -6,7 +6,7 @@ def create_connection():
         conn = mariadb.connect(
             user="cecilio",
             password="ceci1282",
-            host="localhost",
+            host="100.87.222.35",
             port=3306,
             database="simulacion"
         )
