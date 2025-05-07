@@ -86,7 +86,7 @@ def simular_alumnos_y_examenes(n):
     for _ in range(n):
         nombre = fake.first_name()
         email = fake.unique.email()
-        print(f"🧪 Generando alumno: {nombre} - {email}")
+        print(f"Generando alumno: {nombre} - {email}")
         matricula = insertar_estudiante(nombre, email)
         if matricula:
             simular_examen(matricula, "practica", 20, 6, 5)
@@ -95,6 +95,6 @@ def simular_alumnos_y_examenes(n):
 if __name__ == "__main__":
     simular_alumnos_y_examenes(10)  # Cambia 10 si quieres más
 
-    print("\n🎓 Usuarios generados para iniciar sesión:")
+    print("\nUsuarios generados para iniciar sesión:")
     for usuario in usuarios_generados:
-        print(f"🔑 Email: {usuario['email']} | Contraseña: {usuario['password']}")
+        print(f"Email: {usuario['email']} | Contraseña: {usuario['password']}")
