@@ -1,7 +1,7 @@
 # controllers/final_controller.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models.examen_model import get_random_questions, is_correct_answer, guardar_historial, contar_intentos
+from models.examen_model import get_random_questions, is_correct_answer, guardar_historial, contar_intentos, ha_aprobado_examen_final
 from models.registrar_model import obtener_matricula_por_email
 
 final_bp = Blueprint('final', __name__)
@@ -13,6 +13,11 @@ def examen_final():
 
     email = session['username']
     matricula = obtener_matricula_por_email(email)
+
+    # ✅ Verificar si ya aprobó el examen final
+    if ha_aprobado_examen_final(matricula):
+        flash('✅ Ya aprobaste el examen final. No necesitas volver a presentarlo.', 'info')
+        return redirect(url_for('estudiante'))
 
     # Verificar número de intentos para final
     intentos_final = contar_intentos(matricula, "final")

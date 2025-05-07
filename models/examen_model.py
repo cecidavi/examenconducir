@@ -103,3 +103,20 @@ def obtener_historial_estudiante(matricula):
         cursor.close()
         conn.close()
     return historial
+
+def ha_aprobado_examen_final(matricula):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                SELECT 1 FROM historial_estudiante
+                WHERE matricula = %s AND tipo_test = 'final' AND calificacion >= 75
+                LIMIT 1
+            """, (matricula,))
+            resultado = cursor.fetchone()
+            return resultado is not None
+        finally:
+            cursor.close()
+            conn.close()
+    return False
