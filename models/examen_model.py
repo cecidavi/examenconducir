@@ -92,7 +92,7 @@ def obtener_historial_estudiante(matricula):
     if conn:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT tipo_test, calificacion, fecha_hora_realiza
+            SELECT id_record, tipo_test, calificacion, fecha_hora_realiza
             FROM historial_estudiante
             WHERE matricula = %s
             ORDER BY fecha_hora_realiza DESC
@@ -100,13 +100,15 @@ def obtener_historial_estudiante(matricula):
         resultados = cursor.fetchall()
         for fila in resultados:
             historial.append({
-                'tipo': fila[0],
-                'calificacion': fila[1],
-                'fecha': fila[2].strftime("%d/%m/%Y %H:%M")
+                'id_record': fila[0],  # <- esto es lo que faltaba
+                'tipo': fila[1],
+                'calificacion': fila[2],
+                'fecha': fila[3].strftime("%d/%m/%Y %H:%M")
             })
         cursor.close()
         conn.close()
     return historial
+
 
 def ha_aprobado_examen_final(matricula):
     conn = create_connection()
@@ -151,3 +153,31 @@ def obtener_texto_respuesta(id_respuesta):
         finally:
             cursor.close()
             conn.close()
+
+def obtener_respuestas_de_intento(id_record):
+    conn = create_connection()
+    respuestas = []
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT 
+                p.reactivo,
+                r.opcion AS respuesta_usuario,
+                r.ok,
+                b.ruta AS imagen
+            FROM examen_estudiante e
+            JOIN preguntas p ON e.id_pregunta = p.id_pregunta
+            JOIN respuestas r ON r.id_respuesta = e.id_respuesta
+            LEFT JOIN banco_imagenes b ON p.codigo_imagen = b.codigo_imagen
+            WHERE e.id_record = %s
+        """, (id_record,))
+        for fila in cursor.fetchall():
+            respuestas.append({
+                'pregunta': fila[0],
+                'respuesta': fila[1],
+                'correcta': bool(fila[2]),
+                'imagen': fila[3]
+            })
+        cursor.close()
+        conn.close()
+    return respuestas
