@@ -1,7 +1,15 @@
 # controllers/final_controller.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models.examen_model import get_random_questions, is_correct_answer, guardar_historial, contar_intentos, ha_aprobado_examen_final
+from models.examen_model import (
+    get_random_questions,
+    is_correct_answer,
+    guardar_historial,
+    contar_intentos,
+    ha_aprobado_examen_final,
+    guardar_respuesta,
+    obtener_texto_respuesta
+)
 from models.registrar_model import obtener_matricula_por_email
 
 final_bp = Blueprint('final', __name__)
@@ -38,8 +46,20 @@ def examen_final():
         # Calificación de examen final: 2.5 puntos por reactivo correcto
         calificacion = correctas * 2.5
 
-        # Guardar resultado
-        guardar_historial(matricula, calificacion, "final")
+        # ✅ Guardar resultado del intento y obtener su ID
+        id_record = guardar_historial(matricula, calificacion, "final")
+
+        # ✅ Guardar respuestas individuales
+        for pregunta_id in respuestas:
+            respuesta_id = int(respuestas[pregunta_id])
+            texto_respuesta = obtener_texto_respuesta(respuesta_id)
+            guardar_respuesta(
+                int(pregunta_id),
+                matricula,
+                texto_respuesta,
+                respuesta_id,
+                id_record
+            )
 
         # Mensajes de resultado
         if calificacion >= 75:

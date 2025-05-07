@@ -54,6 +54,7 @@ def is_correct_answer(respuesta_id):
 
 def guardar_historial(matricula, calificacion, tipo_test):
     conn = create_connection()
+    id_record = None
     if conn:
         cursor = conn.cursor()
         try:
@@ -62,9 +63,12 @@ def guardar_historial(matricula, calificacion, tipo_test):
                 VALUES (%s, %s, %s, NOW())
             """, (matricula, calificacion, tipo_test))
             conn.commit()
+            id_record = cursor.lastrowid  # Captura el ID generado
         finally:
             cursor.close()
             conn.close()
+    return id_record  # Lo devolvemos para usarlo después
+
 
 def contar_intentos(matricula, tipo_test):
     conn = create_connection()
@@ -120,3 +124,30 @@ def ha_aprobado_examen_final(matricula):
             cursor.close()
             conn.close()
     return False
+
+def guardar_respuesta(id_pregunta, matricula, respuesta_texto, id_respuesta, id_record):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO examen_estudiante (id_pregunta, matricula, respuesta, id_respuesta, id_record)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (id_pregunta, matricula, respuesta_texto, id_respuesta, id_record))
+            conn.commit()
+        finally:
+            cursor.close()
+            conn.close()
+
+
+def obtener_texto_respuesta(id_respuesta):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT opcion FROM respuestas WHERE id_respuesta = %s", (id_respuesta,))
+            result = cursor.fetchone()
+            return result[0] if result else ""
+        finally:
+            cursor.close()
+            conn.close()
