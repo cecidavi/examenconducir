@@ -6,11 +6,11 @@ def create_connection():
         conn = mariadb.connect(
             user="cecilio",
             password="ceci1282",
-            host="100.87.222.35",
+            host="localhost",
             port=3306,
             database="simulacion"
         )
-        print("Connection successful!")
+      #  print("Connection successful!")
         return conn
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB: {e}")

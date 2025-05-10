@@ -38,7 +38,7 @@ def insertar_estudiante(nombre, email):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        contrasena_segura = generate_password_hash('1234')  # contraseña encriptada válida
+        contrasena_segura = generate_password_hash('1234')
 
         cursor.execute("""
             INSERT INTO estudiante (nombre, paterno, materno, email, telefono, contrasena)
@@ -50,7 +50,7 @@ def insertar_estudiante(nombre, email):
         cursor.close()
         conn.close()
 
-        usuarios_generados.append({'email': email, 'password': '1234'})  # guardar para imprimir
+        usuarios_generados.append({'email': email, 'password': '1234'})
         return matricula
     return None
 
@@ -59,13 +59,32 @@ def simular_examen(matricula, tipo_test, cantidad_preguntas, max_intentos, punto
     for _ in range(random.randint(1, max_intentos)):
         seleccionadas = random.sample(preguntas, cantidad_preguntas)
         correctas = 0
-        id_record = guardar_historial(matricula, 0, tipo_test)  # guardamos primero
+        id_record = guardar_historial(matricula, 0, tipo_test)
 
-        for item in seleccionadas:
+        # Definir preguntas que fallará, incluso si "sabe"
+        preguntas_a_fallar = set()
+        if matricula % 2 == 0:
+            margen_error = random.randint(1, int(cantidad_preguntas * 0.1))  # hasta 10% de fallas
+            preguntas_a_fallar = set(random.sample(range(cantidad_preguntas), margen_error))
+
+        for idx, item in enumerate(seleccionadas):
             id_pregunta = item['id_pregunta']
-            id_respuesta = random.choice(item['respuestas'])  # aleatorio
+
+            if idx in preguntas_a_fallar:
+                # Forzar respuesta incorrecta
+                respuestas_incorrectas = [rid for rid in item['respuestas'] if not is_correct_answer(rid)]
+                id_respuesta = random.choice(respuestas_incorrectas) if respuestas_incorrectas else random.choice(item['respuestas'])
+            elif matricula % 2 == 0:
+                # Elegir respuesta correcta
+                respuesta_correcta = next((rid for rid in item['respuestas'] if is_correct_answer(rid)), None)
+                id_respuesta = respuesta_correcta if respuesta_correcta else random.choice(item['respuestas'])
+            else:
+                # Matrícula impar: responde aleatoriamente
+                id_respuesta = random.choice(item['respuestas'])
+
             if is_correct_answer(id_respuesta):
                 correctas += 1
+
             texto = obtener_texto_respuesta(id_respuesta)
             guardar_respuesta(id_pregunta, matricula, texto, id_respuesta, id_record)
 
@@ -93,7 +112,7 @@ def simular_alumnos_y_examenes(n):
             simular_examen(matricula, "final", 40, 3, 2.5)
 
 if __name__ == "__main__":
-    simular_alumnos_y_examenes(10)  # Cambia 10 si quieres más
+    simular_alumnos_y_examenes(10)
 
     print("\nUsuarios generados para iniciar sesión:")
     for usuario in usuarios_generados:
